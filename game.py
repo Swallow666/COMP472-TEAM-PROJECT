@@ -222,7 +222,16 @@ def recycle_move_judge(player_move):	# check all illegal input and illegal recyc
 
 	# check if recycle a card that would temporarily leave the board in an illegal state
 	# means recycle a card that has something on top of it
+	if (move_info[0] == move_info[2]):
+		if (int(move_info[3]) != 12):
+			if (board[11 - int(move_info[3])][ord(move_info[0]) - 65] != '  '):
+				return False
+	if (move_info[1] == moving_times[3]):
+		if (int(move_info[3]) != 12):
+			if ((board[11 - int(move_info[3])][ord(move_info[0]) - 65] != '  ') or (board[11 - int(move_info[3])][ord(move_info[2]) - 65] != '  ')):
+				return False
 
+	# check if after recycle, below illegal space and out of limit
 
 def recycle_move(player_move): # simply do recycle moving
 
