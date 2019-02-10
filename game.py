@@ -232,6 +232,26 @@ def recycle_move_judge(player_move):	# check all illegal input and illegal recyc
 				return False
 
 	# check if after recycle, below illegal space and out of limit
+	if ((move_info[4] == '1') or (move_info[4] == '3') or (move_info[4] == '5') or (move_info[4] == '7')):
+		#check if there is illegal space below cases 1357
+
+		if (move_info[5] == 'H'):	#check out of limit
+			return False
+
+		if (int(move_info[6]) != 1):	# pass if it is 1, no space below, else check if below exists space
+			if ((board[13 - int(move_info[6])][ord(move_info[5]) - 65] == '  ') or (board[13 - int(move_info[6])][ord(move_info[5]) - 64] == '  ')):
+				return False
+
+	if ((move_info[4] == '2') or (move_info[4] == '4') or (move_info[4] == '6') or (move_info[4] == '8')):
+		#check if there is illegal space below cases 2468
+
+		if (int(move_info[6]) == 12):	#check out of limit
+			return False
+
+		if (int(move_info[6]) != 1):
+			if (board[13 - int(move_info[6])][ord(move_info[5]) - 65] == '  '):
+				return False
+	return True
 
 def recycle_move(player_move): # simply do recycle moving
 
