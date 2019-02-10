@@ -287,14 +287,14 @@ Welcome to the DOUBLE card game!
 
 
 =======================
-|					  |
-|					  |
-|	   DOUBLE CARD    |
-|		      		  |
-|		 1. PVE       |
-|	     2. PVP	      |
-|					  |
-|					  |
+|                     |
+|                     |
+|       DOUBLE CARD   |
+|                     |
+|        1. PVE       |
+|        2. PVP       |
+|                     |
+|                     |
 |======================
 
 					  
