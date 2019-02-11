@@ -16,6 +16,8 @@ last_added_card = []
 
 game_dict = {}
 
+card_dict = {}
+
 board_values = [] 
 for i in range(0,96):
 	board_values.append('  ')
@@ -149,6 +151,9 @@ def regular_move(player_move):	# do regular moving
 	global moving_times
 	moving_times += 1
 
+	global card_dict
+	card_dict[move_info[2],move_info[3]] = move_info[1]
+
 def recycle_move_judge(player_move):	# check all illegal input and illegal recycle moves
 
 	move_info = player_move.split(' ')
@@ -218,7 +223,9 @@ def recycle_move_judge(player_move):	# check all illegal input and illegal recyc
 		return False
 
 	# check if the card put back to same position and NOT changing orientation
-
+	if ((move_info[5] == move_info[0]) and (move_info[6] == move_info[1])):
+		if (card_dict[move_info[0],move_info[1]] == move_info[4]):
+			return False
 
 	# check if recycle a card that would temporarily leave the board in an illegal state
 	# means recycle a card that has something on top of it
@@ -284,7 +291,12 @@ def recycle_move(player_move): # simply do recycle moving
 	global moving_times
 	moving_times += 1
 
+	global card_dict
+	card_dict.pop((move_info[0],move_info[1]))
+	card_dict[move_info[5],move_info[6]] = move_info[4]
+
 def winning_judge():	# detect winning
+	return False
 
 def stances(stance):	# choose board values from orientation/stances
 
@@ -406,5 +418,5 @@ if (player_choice == str(2)):
 				win = True;
 				break;
 
-	if (win = False):
+	if (win == False):
 		print('Draw.')
