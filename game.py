@@ -218,6 +218,17 @@ def recycle_move_judge(player_move):	# check all illegal input and illegal recyc
 	if not(((move_info[0] == move_info[2]) and (int(move_info[1]) == (int(move_info[3]) - 1))) or ((move_info[1] == move_info[3]) and (ord(move_info[0]) == (ord(move_info[2]) - 1)))):
 		return False
 
+	# check if there exists a card as the input positions
+	if (move_info[0],move_info[1]) not in card_dict:
+		return False
+	if (move_info[0],move_info[1]) in card_dict:
+		if card_dict[move_info[0],move_info[1]] in ('1','3','5','7'):
+			if not((move_info[1] == move_info[3]) and (ord(move_info[0]) == (ord(move_info[2]) - 1))):
+				return False
+		if card_dict[move_info[0],move_info[1]] in ('2','4','6','8'):
+			if not((move_info[0] == move_info[2]) and (int(move_info[1]) == (int(move_info[3]) - 1))):
+				return False
+
 	# check if the card choose is opponent just placed
 	if ((move_info[0] == last_added_card[1]) and (move_info[1] == last_added_card[2])):
 		return False
