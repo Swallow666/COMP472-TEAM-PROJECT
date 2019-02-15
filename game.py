@@ -20,7 +20,7 @@ card_dict = {}
 
 board_values = [] 
 for i in range(0,96):
-	board_values.append('  ')
+	board_values.append('   ')
 
 board = np.array(board_values)
 board.resize(12,8)
@@ -70,7 +70,7 @@ def regular_move_judge(player_move):		# check all illegal input and illegal regu
 			return False
 
 		if (int(move_info[3]) != 1):	# pass if it is 1, no space below, else check if below exists space
-			if ((board[13 - int(move_info[3])][ord(move_info[2]) - 65] == '  ') or (board[13 - int(move_info[3])][ord(move_info[2]) - 64] == '  ')):
+			if ((board[13 - int(move_info[3])][ord(move_info[2]) - 65] == '   ') or (board[13 - int(move_info[3])][ord(move_info[2]) - 64] == '   ')):
 				return False
 
 	if (move_info[1] in ('2','4','6','8')):
@@ -80,7 +80,7 @@ def regular_move_judge(player_move):		# check all illegal input and illegal regu
 			return False
 
 		if (int(move_info[3]) != 1):
-			if (board[13 - int(move_info[3])][ord(move_info[2]) - 65] == '  '):
+			if (board[13 - int(move_info[3])][ord(move_info[2]) - 65] == '   '):
 				return False
 
 	return True
@@ -242,11 +242,11 @@ def recycle_move_judge(player_move):	# check all illegal input and illegal recyc
 	# means recycle a card that has something on top of it
 	if (move_info[0] == move_info[2]):
 		if (int(move_info[3]) != 12):
-			if (board[11 - int(move_info[3])][ord(move_info[0]) - 65] != '  '):
+			if (board[11 - int(move_info[3])][ord(move_info[0]) - 65] != '   '):
 				return False
 	if (move_info[1] == moving_times[3]):
 		if (int(move_info[3]) != 12):
-			if ((board[11 - int(move_info[3])][ord(move_info[0]) - 65] != '  ') or (board[11 - int(move_info[3])][ord(move_info[2]) - 65] != '  ')):
+			if ((board[11 - int(move_info[3])][ord(move_info[0]) - 65] != '   ') or (board[11 - int(move_info[3])][ord(move_info[2]) - 65] != '   ')):
 				return False
 
 	# check if after recycle, below illegal space and out of limit
@@ -257,7 +257,7 @@ def recycle_move_judge(player_move):	# check all illegal input and illegal recyc
 			return False
 
 		if (int(move_info[6]) != 1):	# pass if it is 1, no space below, else check if below exists space
-			if ((board[13 - int(move_info[6])][ord(move_info[5]) - 65] == '  ') or (board[13 - int(move_info[6])][ord(move_info[5]) - 64] == '  ')):
+			if ((board[13 - int(move_info[6])][ord(move_info[5]) - 65] == '   ') or (board[13 - int(move_info[6])][ord(move_info[5]) - 64] == '   ')):
 				return False
 
 	if (move_info[4] in ('2','4','6','8')):
@@ -267,7 +267,7 @@ def recycle_move_judge(player_move):	# check all illegal input and illegal recyc
 			return False
 
 		if (int(move_info[6]) != 1):
-			if (board[13 - int(move_info[6])][ord(move_info[5]) - 65] == '  '):
+			if (board[13 - int(move_info[6])][ord(move_info[5]) - 65] == '   '):
 				return False
 	return True
 
@@ -288,8 +288,8 @@ def recycle_move(player_move): # simply do recycle moving
 		board[11 - int(move_info[6])][ord(move_info[5]) - 65] = stance_str_list[1]
 
 	# remove recycle original positions
-	board[12 - int(move_info[1])][ord(move_info[0]) - 65] = '  '
-	board[12 - int(move_info[3])][ord(move_info[2]) - 65] = '  '
+	board[12 - int(move_info[1])][ord(move_info[0]) - 65] = '   '
+	board[12 - int(move_info[3])][ord(move_info[2]) - 65] = '   '
 
 	card_added = []
 	card_added.append(move_info[4])
