@@ -329,8 +329,622 @@ def recycle_move(player_move): # simply do recycle moving
 	card_dict.pop((move_info[0],move_info[1]))
 	card_dict[move_info[5],move_info[6]] = move_info[4]
 
-def winning_judge():	# detect winning
-	return False
+def winning_detect_for_dot():	# detect winning for dot
+
+	global last_added_card
+	repeat_dot_count = 0
+	repeat_same_dot_count = 0
+
+	if (last_added_card[0] in ('1','3','5','7')):
+
+		# check last added card 1 row
+		for i in range(0,8):
+			if (board[12 - int(last_added_card[2])][i][1] == ' '):
+				repeat_dot_count = 0
+			else:
+				repeat_dot_count += 1
+			if (i != 0):
+				if (board[12 - int(last_added_card[2])][i][1] == board[12 - int(last_added_card[2])][i - 1][1]):
+					repeat_same_dot_count = repeat_dot_count
+				else:
+					repeat_same_dot_count = 0
+					repeat_dot_count = 1
+			if (repeat_same_dot_count == 4):
+				return True
+
+		# check last added card 2 columns
+		repeat_dot_count = 0
+		repeat_same_dot_count = 0
+		for i in range(0,12):
+			if (board[i][ord(last_added_card[1]) - 65][1] == ' '):
+				repeat_dot_count = 0
+			else:
+				repeat_dot_count += 1
+			if (i != 0):
+				if (board[i][ord(last_added_card[1]) - 65][1] == board[i - 1][ord(last_added_card[1]) - 65][1]):
+					repeat_same_dot_count = repeat_dot_count
+				else:
+					repeat_same_dot_count = 0
+					repeat_dot_count = 1
+			if (repeat_same_dot_count == 4):
+				return True
+
+		repeat_dot_count = 0
+		repeat_same_dot_count = 0
+		for i in range(0,12):
+			if (board[i][ord(last_added_card[1]) - 64][1] == ' '):
+				repeat_dot_count = 0
+			else:
+				repeat_dot_count += 1
+			if (i != 0):
+				if (board[i][ord(last_added_card[1]) - 64][1] == board[i - 1][ord(last_added_card[1]) - 64][1]):
+					repeat_same_dot_count = repeat_dot_count
+				else:
+					repeat_same_dot_count = 0
+					repeat_dot_count = 1
+			if (repeat_same_dot_count == 4):
+				return True
+
+		# check last added card diagonally 4 times in different lines
+		repeat_same_dot_count = 0
+		repeat_dot_count = 0
+		first_one = 0
+		start_row_index = 12 - int(last_added_card[2])
+		start_col_index = ord(last_added_card[1]) - 65
+		while ((start_row_index != 11) and (start_col_index != 0)):
+			start_row_index += 1
+			start_col_index -= 1
+		while ((start_row_index != 0) and (start_col_index != 7)):
+			if (board[start_row_index][start_col_index][1] == ' '):
+				repeat_dot_count = 0
+			else:
+				repeat_dot_count += 1
+			if (first_one != 0):
+				if (board[start_row_index][start_col_index][1] == board[start_row_index + 1][start_col_index - 1][1]):
+					repeat_same_dot_count = repeat_dot_count
+				else:
+					repeat_same_dot_count = 0
+					repeat_dot_count = 1
+			if (repeat_same_dot_count == 4):
+				return True
+			first_one += 1
+			start_row_index -= 1
+			start_col_index += 1
+
+		repeat_same_dot_count = 0
+		repeat_dot_count = 0
+		first_one = 0
+		start_row_index = 12 - int(last_added_card[2])
+		start_col_index = ord(last_added_card[1]) - 65
+		while ((start_row_index != 0) and (start_col_index != 0)):
+			start_row_index -= 1
+			start_col_index -= 1
+		while ((start_row_index != 11) and (start_col_index != 7)):
+			if (board[start_row_index][start_col_index][1] == ' '):
+				repeat_dot_count = 0
+			else:
+				repeat_dot_count += 1
+			if (first_one != 0):
+				if (board[start_row_index][start_col_index][1] == board[start_row_index - 1][start_col_index - 1][1]):
+					repeat_same_dot_count = repeat_dot_count
+				else:
+					repeat_same_dot_count = 0
+					repeat_dot_count = 1
+			if (repeat_same_dot_count == 4):
+				return True
+			first_one += 1
+			start_row_index += 1
+			start_col_index += 1
+
+		repeat_same_dot_count = 0
+		repeat_dot_count = 0
+		first_one = 0
+		start_row_index = 12 - int(last_added_card[2])
+		start_col_index = ord(last_added_card[1]) - 64
+		while ((start_row_index != 11) and (start_col_index != 0)):
+			start_row_index += 1
+			start_col_index -= 1
+		while ((start_row_index != 0) and (start_col_index != 7)):
+			if (board[start_row_index][start_col_index][1] == ' '):
+				repeat_dot_count = 0
+			else:
+				repeat_dot_count += 1
+			if (first_one != 0):
+				if (board[start_row_index][start_col_index][1] == board[start_row_index + 1][start_col_index - 1][1]):
+					repeat_same_dot_count = repeat_dot_count
+				else:
+					repeat_same_dot_count = 0
+					repeat_dot_count = 1
+			if (repeat_same_dot_count == 4):
+				return True
+			first_one += 1
+			start_row_index -= 1
+			start_col_index += 1
+
+		repeat_same_dot_count = 0
+		repeat_dot_count = 0
+		first_one = 0
+		start_row_index = 12 - int(last_added_card[2])
+		start_col_index = ord(last_added_card[1]) - 64
+		while ((start_row_index != 0) and (start_col_index != 0)):
+			start_row_index -= 1
+			start_col_index -= 1
+		while ((start_row_index != 11) and (start_col_index != 7)):
+			if (board[start_row_index][start_col_index][1] == ' '):
+				repeat_dot_count = 0
+			else:
+				repeat_dot_count += 1
+			if (first_one != 0):
+				if (board[start_row_index][start_col_index][1] == board[start_row_index - 1][start_col_index - 1][1]):
+					repeat_same_dot_count = repeat_dot_count
+				else:
+					repeat_same_dot_count = 0
+					repeat_dot_count = 1
+			if (repeat_same_dot_count == 4):
+				return True
+			first_one += 1
+			start_row_index += 1
+			start_col_index += 1
+
+	if (last_added_card[0] in ('2','4','6','8')):
+
+		# check last added card 2 rows
+		for i in range(0,8):
+			if (board[12 - int(last_added_card[2])][i][1] == ' '):
+				repeat_dot_count = 0
+			else:
+				repeat_dot_count += 1
+			if (i != 0):
+				if (board[12 - int(last_added_card[2])][i][1] == board[12 - int(last_added_card[2])][i - 1][1]):
+					repeat_same_dot_count = repeat_dot_count
+				else:
+					repeat_same_dot_count = 0
+					repeat_dot_count = 1
+			if (repeat_same_dot_count == 4):
+				return True
+
+		repeat_dot_count = 0
+		repeat_same_dot_count = 0
+		for i in range(0,8):
+			if (board[11 - int(last_added_card[2])][i][1] == ' '):
+				repeat_dot_count = 0
+			else:
+				repeat_dot_count += 1
+			if (i != 0):
+				if (board[11 - int(last_added_card[2])][i][1] == board[11 - int(last_added_card[2])][i - 1][1]):
+					repeat_same_dot_count = repeat_dot_count
+				else:
+					repeat_same_dot_count = 0
+					repeat_dot_count = 1
+			if (repeat_same_dot_count == 4):
+				return True
+
+		# check last added card 1 column
+		repeat_dot_count = 0
+		repeat_same_dot_count = 0
+		for i in range(0,12):
+			if (board[i][ord(last_added_card[1]) - 65][1] == ' '):
+				repeat_dot_count = 0
+			else:
+				repeat_dot_count += 1
+			if (i != 0):
+				if (board[i][ord(last_added_card[1]) - 65][1] == board[i - 1][ord(last_added_card[1]) - 65][1]):
+					repeat_same_dot_count = repeat_dot_count
+				else:
+					repeat_same_dot_count = 0
+					repeat_dot_count = 1
+			if (repeat_same_dot_count == 4):
+				return True
+
+		# check last added card diagonally 4 times in different lines
+		repeat_same_dot_count = 0
+		repeat_dot_count = 0
+		first_one = 0
+		start_row_index = 12 - int(last_added_card[2])
+		start_col_index = ord(last_added_card[1]) - 65
+		while ((start_row_index != 11) and (start_col_index != 0)):
+			start_row_index += 1
+			start_col_index -= 1
+		while ((start_row_index != 0) and (start_col_index != 7)):
+			if (board[start_row_index][start_col_index][1] == ' '):
+				repeat_dot_count = 0
+			else:
+				repeat_dot_count += 1
+			if (first_one != 0):
+				if (board[start_row_index][start_col_index][1] == board[start_row_index + 1][start_col_index - 1][1]):
+					repeat_same_dot_count = repeat_dot_count
+				else:
+					repeat_same_dot_count = 0
+					repeat_dot_count = 1
+			if (repeat_same_dot_count == 4):
+				return True
+			first_one += 1
+			start_row_index -= 1
+			start_col_index += 1
+
+		repeat_same_dot_count = 0
+		repeat_dot_count = 0
+		first_one = 0
+		start_row_index = 12 - int(last_added_card[2])
+		start_col_index = ord(last_added_card[1]) - 65
+		while ((start_row_index != 0) and (start_col_index != 0)):
+			start_row_index -= 1
+			start_col_index -= 1
+		while ((start_row_index != 11) and (start_col_index != 7)):
+			if (board[start_row_index][start_col_index][1] == ' '):
+				repeat_dot_count = 0
+			else:
+				repeat_dot_count += 1
+			if (first_one != 0):
+				if (board[start_row_index][start_col_index][1] == board[start_row_index - 1][start_col_index - 1][1]):
+					repeat_same_dot_count = repeat_dot_count
+				else:
+					repeat_same_dot_count = 0
+					repeat_dot_count = 1
+			if (repeat_same_dot_count == 4):
+				return True
+			first_one += 1
+			start_row_index += 1
+			start_col_index += 1
+
+		repeat_same_dot_count = 0
+		repeat_dot_count = 0
+		first_one = 0
+		start_row_index = 11 - int(last_added_card[2])
+		start_col_index = ord(last_added_card[1]) - 65
+		while ((start_row_index != 11) and (start_col_index != 0)):
+			start_row_index += 1
+			start_col_index -= 1
+		while ((start_row_index != 0) and (start_col_index != 7)):
+			if (board[start_row_index][start_col_index][1] == ' '):
+				repeat_dot_count = 0
+			else:
+				repeat_dot_count += 1
+			if (first_one != 0):
+				if (board[start_row_index][start_col_index][1] == board[start_row_index + 1][start_col_index - 1][1]):
+					repeat_same_dot_count = repeat_dot_count
+				else:
+					repeat_same_dot_count = 0
+					repeat_dot_count = 1
+			if (repeat_same_dot_count == 4):
+				return True
+			first_one += 1
+			start_row_index -= 1
+			start_col_index += 1
+
+		repeat_same_dot_count = 0
+		repeat_dot_count = 0
+		first_one = 0
+		start_row_index = 11 - int(last_added_card[2])
+		start_col_index = ord(last_added_card[1]) - 65
+		while ((start_row_index != 0) and (start_col_index != 0)):
+			start_row_index -= 1
+			start_col_index -= 1
+		while ((start_row_index != 11) and (start_col_index != 7)):
+			if (board[start_row_index][start_col_index][1] == ' '):
+				repeat_dot_count = 0
+			else:
+				repeat_dot_count += 1
+			if (first_one != 0):
+				if (board[start_row_index][start_col_index][1] == board[start_row_index - 1][start_col_index - 1][1]):
+					repeat_same_dot_count = repeat_dot_count
+				else:
+					repeat_same_dot_count = 0
+					repeat_dot_count = 1
+			if (repeat_same_dot_count == 4):
+				return True
+			first_one += 1
+			start_row_index += 1
+			start_col_index += 1
+
+def winning_detect_for_color():
+	# detect color winning 
+
+	global last_added_card
+	repeat_color_count = 0
+	repeat_same_color_count = 0
+
+	if (last_added_card[0] in ('1','3','5','7')):
+
+		# check last added card 1 row
+		for i in range(0,8):
+			if (board[12 - int(last_added_card[2])][i][0] == ' '):
+				repeat_color_count = 0
+			else:
+				repeat_color_count += 1
+			if (i != 0):
+				if (board[12 - int(last_added_card[2])][i][0] == board[12 - int(last_added_card[2])][i - 1][0]):
+					repeat_same_color_count = repeat_color_count
+				else:
+					repeat_same_color_count = 0
+					repeat_color_count = 1
+			if (repeat_same_color_count == 4):
+				return True
+
+		# check last added card 2 columns
+		repeat_color_count = 0
+		repeat_same_color_count = 0
+		for i in range(0,12):
+			if (board[i][ord(last_added_card[1]) - 65][0] == ' '):
+				repeat_color_count = 0
+			else:
+				repeat_color_count += 1
+			if (i != 0):
+				if (board[i][ord(last_added_card[1]) - 65][0] == board[i - 1][ord(last_added_card[1]) - 65][0]):
+					repeat_same_color_count = repeat_color_count
+				else:
+					repeat_same_color_count = 0
+					repeat_color_count = 1
+			if (repeat_same_color_count == 4):
+				return True
+
+		repeat_color_count = 0
+		repeat_same_color_count = 0
+		for i in range(0,12):
+			if (board[i][ord(last_added_card[1]) - 64][0] == ' '):
+				repeat_color_count = 0
+			else:
+				repeat_color_count += 1
+			if (i != 0):
+				if (board[i][ord(last_added_card[1]) - 64][0] == board[i - 1][ord(last_added_card[1]) - 64][0]):
+					repeat_same_color_count = repeat_color_count
+				else:
+					repeat_same_color_count = 0
+					repeat_color_count = 1
+			if (repeat_same_color_count == 4):
+				return True
+
+		# check last added card diagonally 4 times in different lines
+		repeat_same_color_count = 0
+		repeat_color_count = 0
+		first_one = 0
+		start_row_index = 12 - int(last_added_card[2])
+		start_col_index = ord(last_added_card[1]) - 65
+		while ((start_row_index != 11) and (start_col_index != 0)):
+			start_row_index += 1
+			start_col_index -= 1
+		while ((start_row_index != 0) and (start_col_index != 7)):
+			if (board[start_row_index][start_col_index][0] == ' '):
+				repeat_color_count = 0
+			else:
+				repeat_color_count += 1
+			if (first_one != 0):
+				if (board[start_row_index][start_col_index][0] == board[start_row_index + 1][start_col_index - 1][0]):
+					repeat_same_color_count = repeat_color_count
+				else:
+					repeat_same_color_count = 0
+					repeat_color_count = 1
+			if (repeat_same_color_count == 4):
+				return True
+			first_one += 1
+			start_row_index -= 1
+			start_col_index += 1
+
+		repeat_same_color_count = 0
+		repeat_color_count = 0
+		first_one = 0
+		start_row_index = 12 - int(last_added_card[2])
+		start_col_index = ord(last_added_card[1]) - 65
+		while ((start_row_index != 0) and (start_col_index != 0)):
+			start_row_index -= 1
+			start_col_index -= 1
+		while ((start_row_index != 11) and (start_col_index != 7)):
+			if (board[start_row_index][start_col_index][0] == ' '):
+				repeat_color_count = 0
+			else:
+				repeat_color_count += 1
+			if (first_one != 0):
+				if (board[start_row_index][start_col_index][0] == board[start_row_index - 1][start_col_index - 1][0]):
+					repeat_same_color_count = repeat_color_count
+				else:
+					repeat_same_color_count = 0
+					repeat_color_count = 1
+			if (repeat_same_color_count == 4):
+				return True
+			first_one += 1
+			start_row_index += 1
+			start_col_index += 1
+
+		repeat_same_color_count = 0
+		repeat_color_count = 0
+		first_one = 0
+		start_row_index = 12 - int(last_added_card[2])
+		start_col_index = ord(last_added_card[1]) - 64
+		while ((start_row_index != 11) and (start_col_index != 0)):
+			start_row_index += 1
+			start_col_index -= 1
+		while ((start_row_index != 0) and (start_col_index != 7)):
+			if (board[start_row_index][start_col_index][0] == ' '):
+				repeat_color_count = 0
+			else:
+				repeat_color_count += 1
+			if (first_one != 0):
+				if (board[start_row_index][start_col_index][0] == board[start_row_index + 1][start_col_index - 1][0]):
+					repeat_same_color_count = repeat_color_count
+				else:
+					repeat_same_color_count = 0
+					repeat_color_count = 1
+			if (repeat_same_color_count == 4):
+				return True
+			first_one += 1
+			start_row_index -= 1
+			start_col_index += 1
+
+		repeat_same_color_count = 0
+		repeat_color_count = 0
+		first_one = 0
+		start_row_index = 12 - int(last_added_card[2])
+		start_col_index = ord(last_added_card[1]) - 64
+		while ((start_row_index != 0) and (start_col_index != 0)):
+			start_row_index -= 1
+			start_col_index -= 1
+		while ((start_row_index != 11) and (start_col_index != 7)):
+			if (board[start_row_index][start_col_index][0] == ' '):
+				repeat_color_count = 0
+			else:
+				repeat_color_count += 1
+			if (first_one != 0):
+				if (board[start_row_index][start_col_index][0] == board[start_row_index - 1][start_col_index - 1][0]):
+					repeat_same_color_count = repeat_color_count
+				else:
+					repeat_same_color_count = 0
+					repeat_color_count = 1
+			if (repeat_same_color_count == 4):
+				return True
+			first_one += 1
+			start_row_index += 1
+			start_col_index += 1
+
+	if (last_added_card[0] in ('2','4','6','8')):
+
+		# check last added card 2 rows
+		for i in range(0,8):
+			if (board[12 - int(last_added_card[2])][i][0] == ' '):
+				repeat_color_count = 0
+			else:
+				repeat_color_count += 1
+			if (i != 0):
+				if (board[12 - int(last_added_card[2])][i][0] == board[12 - int(last_added_card[2])][i - 1][0]):
+					repeat_same_color_count = repeat_color_count
+				else:
+					repeat_same_color_count = 0
+					repeat_color_count = 1
+			if (repeat_same_color_count == 4):
+				return True
+
+		repeat_color_count = 0
+		repeat_same_color_count = 0
+		for i in range(0,8):
+			if (board[11 - int(last_added_card[2])][i][0] == ' '):
+				repeat_color_count = 0
+			else:
+				repeat_color_count += 1
+			if (i != 0):
+				if (board[11 - int(last_added_card[2])][i][0] == board[11 - int(last_added_card[2])][i - 1][0]):
+					repeat_same_color_count = repeat_color_count
+				else:
+					repeat_same_color_count = 0
+					repeat_color_count = 1
+			if (repeat_same_color_count == 4):
+				return True
+
+		# check last added card 1 column
+		repeat_color_count = 0
+		repeat_same_color_count = 0
+		for i in range(0,12):
+			if (board[i][ord(last_added_card[1]) - 65][0] == ' '):
+				repeat_color_count = 0
+			else:
+				repeat_color_count += 1
+			if (i != 0):
+				if (board[i][ord(last_added_card[1]) - 65][0] == board[i - 1][ord(last_added_card[1]) - 65][0]):
+					repeat_same_color_count = repeat_color_count
+				else:
+					repeat_same_color_count = 0
+					repeat_color_count = 1
+			if (repeat_same_color_count == 4):
+				return True
+
+		# check last added card diagonally 4 times in different lines
+		repeat_same_color_count = 0
+		repeat_color_count = 0
+		first_one = 0
+		start_row_index = 12 - int(last_added_card[2])
+		start_col_index = ord(last_added_card[1]) - 65
+		while ((start_row_index != 11) and (start_col_index != 0)):
+			start_row_index += 1
+			start_col_index -= 1
+		while ((start_row_index != 0) and (start_col_index != 7)):
+			if (board[start_row_index][start_col_index][0] == ' '):
+				repeat_color_count = 0
+			else:
+				repeat_color_count += 1
+			if (first_one != 0):
+				if (board[start_row_index][start_col_index][0] == board[start_row_index + 1][start_col_index - 1][0]):
+					repeat_same_color_count = repeat_color_count
+				else:
+					repeat_same_color_count = 0
+					repeat_color_count = 1
+			if (repeat_same_color_count == 4):
+				return True
+			first_one += 1
+			start_row_index -= 1
+			start_col_index += 1
+
+		repeat_same_color_count = 0
+		repeat_color_count = 0
+		first_one = 0
+		start_row_index = 12 - int(last_added_card[2])
+		start_col_index = ord(last_added_card[1]) - 65
+		while ((start_row_index != 0) and (start_col_index != 0)):
+			start_row_index -= 1
+			start_col_index -= 1
+		while ((start_row_index != 11) and (start_col_index != 7)):
+			if (board[start_row_index][start_col_index][0] == ' '):
+				repeat_color_count = 0
+			else:
+				repeat_color_count += 1
+			if (first_one != 0):
+				if (board[start_row_index][start_col_index][0] == board[start_row_index - 1][start_col_index - 1][0]):
+					repeat_same_color_count = repeat_color_count
+				else:
+					repeat_same_color_count = 0
+					repeat_color_count = 1
+			if (repeat_same_color_count == 4):
+				return True
+			first_one += 1
+			start_row_index += 1
+			start_col_index += 1
+
+		repeat_same_color_count = 0
+		repeat_color_count = 0
+		first_one = 0
+		start_row_index = 11 - int(last_added_card[2])
+		start_col_index = ord(last_added_card[1]) - 65
+		while ((start_row_index != 11) and (start_col_index != 0)):
+			start_row_index += 1
+			start_col_index -= 1
+		while ((start_row_index != 0) and (start_col_index != 7)):
+			if (board[start_row_index][start_col_index][0] == ' '):
+				repeat_color_count = 0
+			else:
+				repeat_color_count += 1
+			if (first_one != 0):
+				if (board[start_row_index][start_col_index][0] == board[start_row_index + 1][start_col_index - 1][0]):
+					repeat_same_color_count = repeat_color_count
+				else:
+					repeat_same_color_count = 0
+					repeat_color_count = 1
+			if (repeat_same_color_count == 4):
+				return True
+			first_one += 1
+			start_row_index -= 1
+			start_col_index += 1
+
+		repeat_same_color_count = 0
+		repeat_color_count = 0
+		first_one = 0
+		start_row_index = 11 - int(last_added_card[2])
+		start_col_index = ord(last_added_card[1]) - 65
+		while ((start_row_index != 0) and (start_col_index != 0)):
+			start_row_index -= 1
+			start_col_index -= 1
+		while ((start_row_index != 11) and (start_col_index != 7)):
+			if (board[start_row_index][start_col_index][0] == ' '):
+				repeat_color_count = 0
+			else:
+				repeat_color_count += 1
+			if (first_one != 0):
+				if (board[start_row_index][start_col_index][0] == board[start_row_index - 1][start_col_index - 1][0]):
+					repeat_same_color_count = repeat_color_count
+				else:
+					repeat_same_color_count = 0
+					repeat_color_count = 1
+			if (repeat_same_color_count == 4):
+				return True
+			first_one += 1
+			start_row_index += 1
+			start_col_index += 1
 
 def stances(stance):	# choose board values from orientation/stances
 
@@ -355,7 +969,7 @@ def stances(stance):	# choose board values from orientation/stances
 	return stance_str_list
 
 
-# main program starts here, we can change below to main function in OOP class later for sure
+# main program starts here, we can change below to main function later for sure
 
 print(''' 
 Welcome to the DOUBLE card game!
@@ -400,9 +1014,9 @@ if (player_choice == str(2)):
 	else:
 		game_dict['player2'] = 'dot'
 
-	while(moving_times < 60):           # play
+	while(moving_times < 60):           # play until 60 rounds
 
-		if(moving_times < 24):		# regular
+		if(moving_times < 24):		# regular until 24 rounds
 			print('player1_regular>> ')
 			player1_move = input()
 			while (regular_move_judge(player1_move) == False):
@@ -410,10 +1024,24 @@ if (player_choice == str(2)):
 				player1_move = input()
 			regular_move(player1_move)
 			print_board()
-			if (winning_judge() == True):
-				print('Game ends. Winner is Player1.')
-				win = True;
-				break;
+			if (game_dict['player1'] == 'dot'):
+				if (winning_detect_for_dot() == True):
+					print('Game ends. Winner is player1.')
+					win = True
+					break
+				if (winning_detect_for_color() == True):
+					print('Game ends. Winner is player2')
+					win = True
+					break
+			else:
+				if (winning_detect_for_color() == True):
+					print('Game ends. Winner is player1.')
+					win = True
+					break
+				if (winning_detect_for_dot() == True):
+					print('Game ends. Winner is player2.')
+					win = True
+					break
 
 			print('player2_regular>> ')
 			player2_move = input()
@@ -422,10 +1050,24 @@ if (player_choice == str(2)):
 				player2_move = input()
 			regular_move(player2_move)
 			print_board()
-			if (winning_judge() == True):
-				print('Game ends. Winner is Player2.')
-				win = True;
-				break;
+			if (game_dict['player2'] == 'dot'):
+				if (winning_detect_for_dot() == True):
+					print('Game ends. Winner is player2.')
+					win = True
+					break
+				if (winning_detect_for_color() == True):
+					print('Game ends. Winner is player1')
+					win = True
+					break
+			else:
+				if (winning_detect_for_color() == True):
+					print('Game ends. Winner is player2.')
+					win = True
+					break
+				if (winning_detect_for_dot() == True):
+					print('Game ends. Winner is player1.')
+					win = True
+					break
 
 		else: 			# recycle
 			print('player1_recycle>> ')
@@ -435,10 +1077,24 @@ if (player_choice == str(2)):
 				player1_move = input()
 			recycle_move(player1_move)
 			print_board()
-			if (winning_judge() == True):
-				print('Game ends. Winner is Player1.')
-				win = True;
-				break;
+			if (game_dict['player1'] == 'dot'):
+				if (winning_detect_for_dot() == True):
+					print('Game ends. Winner is player1.')
+					win = True
+					break
+				if (winning_detect_for_color() == True):
+					print('Game ends. Winner is player2')
+					win = True
+					break
+			else:
+				if (winning_detect_for_color() == True):
+					print('Game ends. Winner is player1.')
+					win = True
+					break
+				if (winning_detect_for_dot() == True):
+					print('Game ends. Winner is player2.')
+					win = True
+					break
 
 			print('player2_recycle>> ')
 			player2_move = input()
@@ -447,10 +1103,24 @@ if (player_choice == str(2)):
 				player2_move = input()
 			recycle_move(player2_move)
 			print_board()
-			if (winning_judge() == True):
-				print('Game ends. Winner is Player2.')
-				win = True;
-				break;
+			if (game_dict['player2'] == 'dot'):
+				if (winning_detect_for_dot() == True):
+					print('Game ends. Winner is player2.')
+					win = True
+					break
+				if (winning_detect_for_color() == True):
+					print('Game ends. Winner is player1')
+					win = True
+					break
+			else:
+				if (winning_detect_for_color() == True):
+					print('Game ends. Winner is player2.')
+					win = True
+					break
+				if (winning_detect_for_dot() == True):
+					print('Game ends. Winner is player1.')
+					win = True
+					break
 
 	if (win == False):
-		print('Draw.')
+		print('Draw. No winner this game.')
