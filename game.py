@@ -991,9 +991,13 @@ Welcome to the DOUBLE card game!
 
 player_choice = input()
 
-while ((player_choice != str(1)) and (player_choice != str(2))):
+while (player_choice not in ('0','1','2')):
 	print('Invalid gaming type, enter again.')
 	player_choice = input()
+
+if (player_choice == str(0)):
+	print('YOU ARE IN SECRET DEMO MODE NOW.\nNOW YOU CAN COPY & PASTE TONS OF COMMANDS AS 1 INPUT TO THE CONSOLE.\nTHE SYSTEM WILL RUN AUTOMATICALLY.')
+	# will add code here before the demo for one shot copy & paste input
 
 if (player_choice == str(1)):
 	print('Not add AI yet.')
