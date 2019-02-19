@@ -982,7 +982,7 @@ Welcome to the DOUBLE card game!
 |                     |
 |        1. PVE       |
 |        2. PVP       |
-|                     |
+|        0. One-Shot  |
 |                     |
 |======================
 
@@ -995,9 +995,46 @@ while (player_choice not in ('0','1','2')):
 	print('Invalid gaming type, enter again.')
 	player_choice = input()
 
-if (player_choice == str(0)):
-	print('YOU ARE IN SECRET DEMO MODE NOW.\nNOW YOU CAN COPY & PASTE TONS OF COMMANDS AS 1 INPUT TO THE CONSOLE.\nTHE SYSTEM WILL RUN AUTOMATICALLY.')
-	# will add code here before the demo for one shot copy & paste input
+if (player_choice == str(0)):	# code here for one shot copy & paste input in the demo
+	print('YOU ARE IN SECRET DEMO MODE NOW.\nNOW YOU CAN ONE SHOT COPY & PASTE TONS OF COMMANDS AS 1 INPUT TO THE CONSOLE.\nTHE SYSTEM WILL RUN AUTOMATICALLY.')
+	print('In this format, "0 5 A 1  0 5 C 1  0 5 E 1".')
+	print('But remember you are Admin now, so if you enter in illegal format, your computer will...BOOM!')
+	print('Just do it>> ')
+	commands = input()
+	command_list = commands.split('  ')
+
+	for i in range(0,len(command_list)):
+		if (moving_times >= 60):
+			print('Draw. No winner.')
+			break
+		elif (moving_times < 24):
+			if (regular_move_judge(command_list[i]) == False):
+				print('There is illegal move inside your commands #', i)
+				break
+			else:
+				regular_move(command_list[i])
+				print('\n' + command_list[i] + '\n')
+				print_board()
+				if (winning_detect_for_dot() == True):
+					print('Dot wins.')
+					break
+				if (winning_detect_for_color() == True):
+					print('Color wins.')
+					break
+		else:
+			if (recycle_move_judge(command_list[i]) == False):
+				print('There is illegal move inside your commands #', i)
+				break
+			else:
+				recycle_move(command_list[i])
+				print('\n' + command_list[i] + '\n')
+				print_board()
+				if (winning_detect_for_dot() == True):
+					print('Dot wins.')
+					break
+				if (winning_detect_for_color() == True):
+					print('Color wins.')
+					break
 
 if (player_choice == str(1)):
 	print('Not add AI yet.')
