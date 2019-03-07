@@ -7,10 +7,17 @@
 
 import numpy as np
 # import re
+import AI
 
 moving_times = 0
 
+tree_level = 3
+
 win = False
+
+trace = False
+
+ai_play_order = 1
 
 last_added_card = []	# stance 1-8, A-H, 1-12
 
@@ -972,6 +979,28 @@ def stances(stance):	# choose board values from orientation/stances
 
 	return stance_str_list
 
+def game_tree_regular(node, level):
+	# fake move recursion to build regular game tree
+	global moving_times, last_added_card, card_dict, board
+	moving_times_temp = moving_times
+	last_added_card_temp = last_added_card
+	card_dict_temp = card_dict
+	board_temp = board
+	for i in range(65, 73):	
+		for j in range(1, 13):
+			for k in range(1, 9):
+				command_str = '0' + ' ' + str(k) + ' ' + chr(i) + ' ' + str(j)
+				if regular_move_judge(command_str) == True:
+					regular_move(command_str)
+					child = StateNode(board)
+					if level > 2:
+						child = game_tree_regular(child, level - 1)
+					node.add_child(child)
+					moving_times = moving_times_temp
+					last_added_card = last_added_card_temp
+					card_dict = card_dict_temp
+					board = board_temp
+	return node
 
 # main program starts here, we can change below to main function later for sure
 
@@ -1041,7 +1070,261 @@ if (player_choice == str(0)):	# code here for one shot copy & paste input in the
 					break
 
 if (player_choice == str(1)):
-	print('Not add AI yet.')
+	print('You are in PVE MODE, you will play against our super powerful AI!.')
+
+	print('Press 1 if you want a trace of minimax, press 2 if not.')
+	player_choice = input()
+	while (player_choice not in ('1','2')):
+		print('Invalid choice, enter again.')
+		player_choice = input()
+	if player_choice == '1':
+		trace = True
+	else:
+		trace = False
+	
+	print('Press 1 if you want AI play as 1st player, press 2 if you want AI play as 2nd player (Human will play as opposite player).')
+	player_choice = input()
+	while (player_choice not in ('1','2')):
+		print('Invalid choice, enter again.')
+		player_choice = input()
+	if player_choice == '1':
+		ai_play_order = 1
+	else:
+		ai_play_order = 2
+
+	print('Now choose "dot" or "color" for player1, player2 will automatically get the other.')
+	print('Enter "dot" or "color" for player1>>')
+	player_choice = input()
+	while (player_choice not in ('color','dot')):
+		print('Invalid choice, enter again.')
+		player_choice = input()
+	game_dict['player1'] = player_choice
+	if (player_choice == 'dot'):
+		game_dict['player2'] = 'color'
+	else:
+		game_dict['player2'] = 'dot'
+
+	while moving_times < 60:
+
+		if moving_times < 24:
+
+			if ai_play_order == 1:
+
+				root = StateNode(board)
+				root = game_tree_regular(root, tree_level)
+				root.minimax()
+				ai_move = root.get_next_move()
+				print("AI_regular>> " + ai_move)
+				regular_move(ai_move)
+				print_board()
+				if trace == True:
+					root.trace()
+
+				if (game_dict['player1'] == 'dot'):
+					if (winning_detect_for_dot() == True):
+						print('AI wins.')
+						win = True
+						break
+					if (winning_detect_for_color() == True):
+						print('Player wins.')
+						win = True
+						break
+				else:
+					if (winning_detect_for_color() == True):
+						print('AI wins.')
+						win = True
+						break
+					if (winning_detect_for_dot() == True):
+						print('Player wins.')
+						win = True
+						break
+
+				print('player_regular>> ')
+				player_move = input()
+				while (regular_move_judge(player_move) == False):
+					print('Illegal Move! I will give ya a chance to move it again.')
+					player_move = input()
+				regular_move(player_move)
+				print_board()
+				if (game_dict['player2'] == 'dot'):
+					if (winning_detect_for_dot() == True):
+						print('Player wins.')
+						win = True
+						break
+					if (winning_detect_for_color() == True):
+						print('AI wins.')
+						win = True
+						break
+				else:
+					if (winning_detect_for_color() == True):
+						print('Player wins.')
+						win = True
+						break
+					if (winning_detect_for_dot() == True):
+						print('AI wins.')
+						win = True
+						break
+
+			if ai_play_order == 2:
+
+				print('player_regular>> ')
+				player_move = input()
+				while (regular_move_judge(player_move) == False):
+					print('Illegal Move! I will give ya a chance to move it again.')
+					player_move = input()
+				regular_move(player_move)
+				print_board()
+				if (game_dict['player1'] == 'dot'):
+					if (winning_detect_for_dot() == True):
+						print('Player wins.')
+						win = True
+						break
+					if (winning_detect_for_color() == True):
+						print('AI wins.')
+						win = True
+						break
+				else:
+					if (winning_detect_for_color() == True):
+						print('Player wins.')
+						win = True
+						break
+					if (winning_detect_for_dot() == True):
+						print('AI wins.')
+						win = True
+						break
+
+				root = StateNode(board)
+				root = game_tree_regular(root, tree_level)
+				root.minimax()
+				ai_move = root.get_next_move()
+				print("AI_regular>> " + ai_move)
+				regular_move(ai_move)
+				print_board()
+				if trace == True:
+					root.trace()
+
+				if (game_dict['player2'] == 'dot'):
+					if (winning_detect_for_dot() == True):
+						print('AI wins.')
+						win = True
+						break
+					if (winning_detect_for_color() == True):
+						print('Player wins.')
+						win = True
+						break
+				else:
+					if (winning_detect_for_color() == True):
+						print('AI wins.')
+						win = True
+						break
+					if (winning_detect_for_dot() == True):
+						print('Player wins.')
+						win = True
+						break
+		else:
+			# recycle
+			if ai_play_order == 1:
+
+				print("AI_recycle>> ")
+				# here
+				print_board()
+				if (game_dict['player1'] == 'dot'):
+					if (winning_detect_for_dot() == True):
+						print('AI wins.')
+						win = True
+						break
+					if (winning_detect_for_color() == True):
+						print('Player wins.')
+						win = True
+						break
+				else:
+					if (winning_detect_for_color() == True):
+						print('AI wins.')
+						win = True
+						break
+					if (winning_detect_for_dot() == True):
+						print('Player wins.')
+						win = True
+						break
+
+				print('player_recycle>> ')
+				player_move = input()
+				while (recycle_move_judge(player_move) == False):
+					print('Illegal Move! I will give ya a chance to move it again.')
+					player_move = input()
+				recycle_move(player_move)
+				print_board()
+				if (game_dict['player2'] == 'dot'):
+					if (winning_detect_for_dot() == True):
+						print('Player wins.')
+						win = True
+						break
+					if (winning_detect_for_color() == True):
+						print('AI wins.')
+						win = True
+						break
+				else:
+					if (winning_detect_for_color() == True):
+						print('Player wins.')
+						win = True
+						break
+					if (winning_detect_for_dot() == True):
+						print('AI wins.')
+						win = True
+						break
+
+			if ai_play_order == 2:
+
+				print('player_recycle>> ')
+				player_move = input()
+				while (recycle_move_judge(player_move) == False):
+					print('Illegal Move! I will give ya a chance to move it again.')
+					player_move = input()
+				recycle_move(player_move)
+				print_board()
+				if (game_dict['player1'] == 'dot'):
+					if (winning_detect_for_dot() == True):
+						print('Player wins.')
+						win = True
+						break
+					if (winning_detect_for_color() == True):
+						print('AI wins.')
+						win = True
+						break
+				else:
+					if (winning_detect_for_color() == True):
+						print('Player wins.')
+						win = True
+						break
+					if (winning_detect_for_dot() == True):
+						print('AI wins.')
+						win = True
+						break
+
+				print("AI_recycle>> ")
+				#here
+				print_board()
+				if (game_dict['player2'] == 'dot'):
+					if (winning_detect_for_dot() == True):
+						print('AI wins.')
+						win = True
+						break
+					if (winning_detect_for_color() == True):
+						print('Player wins.')
+						win = True
+						break
+				else:
+					if (winning_detect_for_color() == True):
+						print('AI wins.')
+						win = True
+						break
+					if (winning_detect_for_dot() == True):
+						print('Player wins.')
+						win = True
+						break
+
+	if (win == False):
+		print('Draw. No winner this game.')
 
 if (player_choice == str(2)):
 	print('Starting PVP game!')
@@ -1050,7 +1333,7 @@ if (player_choice == str(2)):
 	print('Now choose "dot" or "color" for player1, player2 will automatically get the other.')
 	print('Enter "dot" or "color" for player1>>')
 	player_choice = input()
-	while ((player_choice != 'color') and (player_choice != 'dot')):
+	while (player_choice not in ('color','dot')):
 		print('Invalid choice, enter again.')
 		player_choice = input()
 	game_dict['player1'] = player_choice
