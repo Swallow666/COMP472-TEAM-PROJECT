@@ -21,6 +21,18 @@ class StateNode:
 		return len(self.children)
 
 	def heuristic(self):
+		sum = 0
+		for i in range(12):
+			for j in range(8):
+				if (self.board[i][j] == 'W\u26AA')
+					sum += 1 * ((11 - i) * 10 + j + 1)
+				if (self.board[i][j] == 'W\u26AB')
+					sum += 3 * ((11 - i) * 10 + j + 1)
+				if (self.board[i][j] == 'R\u26AA')
+					sum += -1.5 * ((11 - i) * 10 + j + 1)
+				if (self.board[i][j] == 'R\u26AB')
+					sum += -2 * ((11 - i) * 10 + j + 1)
+		self.score = sum
 
 	def minimax(self):
 
