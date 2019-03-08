@@ -7,7 +7,7 @@
 
 import numpy as np
 # import re
-import AI
+from AI import StateNode
 
 moving_times = 0
 

@@ -27,5 +27,16 @@ class StateNode:
 	def trace(self):
 		level_three_num = 0
 		for child in self.children:
-			
+			level_three_num += len(child.children)
+		file_handler = open('tracemm.txt', 'a')
+		file_handler.write(str(level_three_num))
+		file_handler.write('\n')
+		file_handler.write(self.score)
+		file_handler.write('\n\n')
+		for child in self.children:
+			file_handler.write(child.score)
+			file_handler.write('\n')
+		file_handler.write('\n')
+		file_handler.close()
+
 	def get_next_move(self):
