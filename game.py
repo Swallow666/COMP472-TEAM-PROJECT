@@ -17,7 +17,13 @@ win = False
 
 trace = False
 
-ai_play_order = 1
+ai_play_order = 1	# default first player
+
+ai_max_min = 1	# default max
+
+command_history = [] # command history list
+
+recycle_pop_card_stance_history = []
 
 last_added_card = []	# stance 1-8, A-H, 1-12
 
@@ -143,6 +149,37 @@ def regular_move_judge(player_move):		# check all illegal input and illegal regu
 		return True
 	'''
 
+def cancel_regular_move():
+	global board, last_added_card, moving_times, card_dict, command_history
+
+	last_move_info = command_history[-1].split(' ')
+
+	moving_times -= 1
+
+	board[12 - int(last_move_info[3])][ord(last_move_info[2]) - 65] = '   '
+	if (last_move_info[1] in ('1','3','5','7')):
+		board[12 - int(last_move_info[3])][ord(last_move_info[2]) - 64] = '   '
+
+	if (last_move_info[1] in ('2','4','6','8')):
+		board[11 - int(last_move_info[3])][ord(last_move_info[2]) - 65] = '   '
+
+	card_dict.pop((last_move_info[2],last_move_info[3]))
+
+	if len(command_history) == 1:
+		last_added_card.pop(-1)
+		last_added_card.pop(-1)
+		last_added_card.pop(-1)
+	else:
+		last_last_move_info = command_history[-2].split(' ')
+
+		last_last_card_added = []
+		last_last_card_added.append(last_last_move_info[-3])
+		last_last_card_added.append(last_last_move_info[-2])
+		last_last_card_added.append(last_last_move_info[-1])
+		last_added_card = last_last_card_added
+
+	command_history.pop(-1)
+
 def regular_move(player_move):	# do regular moving
 
 	global board
@@ -172,6 +209,9 @@ def regular_move(player_move):	# do regular moving
 
 	global card_dict
 	card_dict[move_info[2],move_info[3]] = move_info[1]
+
+	global command_history
+	command_history.append(player_move)
 
 def recycle_move_judge(player_move):	# check all illegal input and illegal recycle moves
 
@@ -305,6 +345,43 @@ def recycle_move_judge(player_move):	# check all illegal input and illegal recyc
 
 	return True
 
+def cancel_recycle_move():
+	global board, last_added_card, moving_times, card_dict, command_history
+
+	last_move_info = command_history[-1].split(' ')
+
+	moving_times -= 1
+
+	board[12 - int(last_move_info[6])][ord(last_move_info[5]) - 65] = '   '
+
+	if (last_move_info[4] in ('1','3','5','7')):
+		board[12 - int(last_move_info[6])][ord(last_move_info[5]) - 64] = '   '
+
+	if (last_move_info[4] in ('2','4','6','8')):
+		board[11 - int(last_move_info[6])][ord(last_move_info[5]) - 65] = '   '
+
+	last_stance_str_list = stances(int(recycle_pop_card_stance_history[-1]))
+	board[12 - int(last_move_info[1])][ord(last_move_info[0]) - 65] = last_stance_str_list[0]
+	board[12 - int(last_move_info[3])][ord(last_move_info[2]) - 65] = last_stance_str_list[1]
+
+	card_dict.pop((last_move_info[5],last_move_info[6]))
+	card_dict[last_move_info[0],last_move_info[1]] = recycle_pop_card_stance_history[-1]
+
+	if len(command_history) == 1:
+		last_added_card.pop(-1)
+		last_added_card.pop(-1)
+		last_added_card.pop(-1)
+	else:
+		last_last_move_info = command_history[-2].split(' ')
+
+		last_last_card_added = []
+		last_last_card_added.append(last_last_move_info[-3])
+		last_last_card_added.append(last_last_move_info[-2])
+		last_last_card_added.append(last_last_move_info[-1])
+		last_added_card = last_last_card_added
+
+	command_history.pop(-1)
+
 def recycle_move(player_move): # simply do recycle moving
 
 	global board
@@ -336,9 +413,13 @@ def recycle_move(player_move): # simply do recycle moving
 	global moving_times
 	moving_times += 1
 
-	global card_dict
+	global card_dict, recycle_pop_card_stance_history
+	recycle_pop_card_stance_history.append(card_dict[move_info[0],move_info[1]])
 	card_dict.pop((move_info[0],move_info[1]))
 	card_dict[move_info[5],move_info[6]] = move_info[4]
+
+	global command_history
+	command_history.append(player_move)
 
 def winning_detect_for_dot():	# detect winning for dot
 
@@ -981,25 +1062,38 @@ def stances(stance):	# choose board values from orientation/stances
 
 def game_tree_regular(node, level):
 	# fake move recursion to build regular game tree
-	global moving_times, last_added_card, card_dict, board
-	moving_times_temp = moving_times
-	last_added_card_temp = last_added_card
-	card_dict_temp = card_dict
-	board_temp = board
 	for i in range(65, 73):	
 		for j in range(1, 13):
 			for k in range(1, 9):
 				command_str = '0' + ' ' + str(k) + ' ' + chr(i) + ' ' + str(j)
 				if regular_move_judge(command_str) == True:
 					regular_move(command_str)
-					child = StateNode(board)
+					child = StateNode(board, tree_level)
+					child.add_move(command_str)
 					if level > 2:
 						child = game_tree_regular(child, level - 1)
 					node.add_child(child)
-					moving_times = moving_times_temp
-					last_added_card = last_added_card_temp
-					card_dict = card_dict_temp
-					board = board_temp
+					cancel_regular_move()
+	return node
+
+def game_tree_recycle(node, level):
+	# fake move recursion to build regular game tree
+	for a in range(65, 73):	
+		for b in range(1, 13):
+			for c in range(65, 73):
+				for d in range(1, 13):
+					for e in range(1, 9):
+						for f in range(65, 73):
+							for g in range(1, 13):
+								command_str = chr(a) + ' ' + str(b) + ' ' + chr(c) + ' ' + str(d) + ' ' + str(e) + ' ' + chr(f) + ' ' + str(g)
+								if recycle_move_judge(command_str) == True:
+									recycle_move(command_str)
+									child = StateNode(board, tree_level)
+									child.add_move(command_str)
+									if level > 2:
+										child = game_tree_recycle(child, level - 1)
+									node.add_child(child)
+									cancel_recycle_move()
 	return node
 
 # main program starts here, we can change below to main function later for sure
@@ -1087,9 +1181,7 @@ if (player_choice == str(1)):
 	while (player_choice not in ('1','2')):
 		print('Invalid choice, enter again.')
 		player_choice = input()
-	if player_choice == '1':
-		ai_play_order = 1
-	else:
+	if player_choice == '2':
 		ai_play_order = 2
 
 	print('Now choose "dot" or "color" for player1, player2 will automatically get the other.')
@@ -1104,15 +1196,23 @@ if (player_choice == str(1)):
 	else:
 		game_dict['player2'] = 'dot'
 
+	if ai_play_order == 1:	# decide AI max or min from color or dot
+		if game_dict['player1'] == 'dot':
+			ai_max_min = -1
+	else:
+		if game_dict['player2'] == 'dot':
+			ai_max_min = -1
+
 	while moving_times < 60:
 
 		if moving_times < 24:
 
 			if ai_play_order == 1:
 
-				root = StateNode(board)
+				root = StateNode(board, tree_level)
+				root.set_max_min(ai_max_min)
 				root = game_tree_regular(root, tree_level)
-				root.minimax()
+				root.ai_algorithm()
 				ai_move = root.get_next_move()
 				print("AI_regular>> " + ai_move)
 				regular_move(ai_move)
@@ -1193,9 +1293,10 @@ if (player_choice == str(1)):
 						win = True
 						break
 
-				root = StateNode(board)
+				root = StateNode(board, tree_level)
+				root.set_max_min(ai_max_min)
 				root = game_tree_regular(root, tree_level)
-				root.minimax()
+				root.ai_algorithm()
 				ai_move = root.get_next_move()
 				print("AI_regular>> " + ai_move)
 				regular_move(ai_move)
@@ -1225,9 +1326,17 @@ if (player_choice == str(1)):
 			# recycle
 			if ai_play_order == 1:
 
-				print("AI_recycle>> ")
-				# here
+				root = StateNode(board, tree_level)
+				root.set_max_min(ai_max_min)
+				root = game_tree_recycle(root, tree_level)
+				root.ai_algorithm()
+				ai_move = root.get_next_move()
+				print("AI_recycle>> " + ai_move)
+				recycle_move(ai_move)
 				print_board()
+				if trace == True:
+					root.trace()
+
 				if (game_dict['player1'] == 'dot'):
 					if (winning_detect_for_dot() == True):
 						print('AI wins.')
@@ -1301,9 +1410,17 @@ if (player_choice == str(1)):
 						win = True
 						break
 
-				print("AI_recycle>> ")
-				#here
+				root = StateNode(board, tree_level)
+				root.set_max_min(ai_max_min)
+				root = game_tree_recycle(root, tree_level)
+				root.ai_algorithm()
+				ai_move = root.get_next_move()
+				print("AI_recycle>> " + ai_move)
+				recycle_move(ai_move)
 				print_board()
+				if trace == True:
+					root.trace()
+
 				if (game_dict['player2'] == 'dot'):
 					if (winning_detect_for_dot() == True):
 						print('AI wins.')
