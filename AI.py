@@ -5,13 +5,13 @@
 # @Link    : https://github.com/Swallow666/COMP472-TEAM-PROJECT
 # @Version : Py-3.72
 
-import numpy
+import numpy as np
 import math
 
 class StateNode:
 
-	def __init__(self, board, level):
-		self.board = board
+	def __init__(self, board_list, level):
+		self.board_list = board_list
 		self.children = []
 		self.score = 0
 		self.level = level
@@ -21,15 +21,17 @@ class StateNode:
 
 	def heuristic(self):
 		sum = 0
+		brd = np.array(self.board_list)
+		brd.resize(12,8)
 		for i in range(12):
 			for j in range(8):
-				if (self.board[i][j] == 'W\u26AA'):
+				if (brd[i][j] == 'W\u26AA'):
 					sum += (1 * ((11 - i) * 10 + j + 1))
-				if (self.board[i][j] == 'W\u26AB'):
+				if (brd[i][j] == 'W\u26AB'):
 					sum += (3 * ((11 - i) * 10 + j + 1))
-				if (self.board[i][j] == 'R\u26AA'):
+				if (brd[i][j] == 'R\u26AA'):
 					sum += (-1.5 * ((11 - i) * 10 + j + 1))
-				if (self.board[i][j] == 'R\u26AB'):
+				if (brd[i][j] == 'R\u26AB'):
 					sum += (-2 * ((11 - i) * 10 + j + 1))
 		self.score = sum
 
