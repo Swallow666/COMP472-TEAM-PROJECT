@@ -1069,9 +1069,9 @@ def game_tree_regular(node, level):
 				if regular_move_judge(command_str) == True:
 					regular_move(command_str)
 					brdlst = []
-					for i in range(12):
-						for j in range(8):
-							brdlst.append(board[i][j])
+					for ii in range(12): 	# bug fixed here
+						for jj in range(8):
+							brdlst.append(board[ii][jj])
 					child = StateNode(brdlst, tree_level)
 					child.add_move(command_str)
 					if level > 2:
@@ -1217,11 +1217,11 @@ if (player_choice == str(1)):
 
 			if ai_play_order == 1:
 
-				brdlst = []
+				brdlst1 = []
 				for i in range(12):
 					for j in range(8):
-						brdlst.append(board[i][j])
-				root = StateNode(brdlst, tree_level)
+						brdlst1.append(board[i][j])
+				root = StateNode(brdlst1, tree_level)
 				root.set_max_min(ai_max_min)
 				root = game_tree_regular(root, tree_level)
 				root.ai_algorithm()
@@ -1305,11 +1305,11 @@ if (player_choice == str(1)):
 						win = True
 						break
 
-				brdlst = []
+				brdlst2 = []
 				for i in range(12):
 					for j in range(8):
-						brdlst.append(board[i][j])
-				root = StateNode(brdlst, tree_level)
+						brdlst2.append(board[i][j])
+				root = StateNode(brdlst2, tree_level)
 				root.set_max_min(ai_max_min)
 				root = game_tree_regular(root, tree_level)
 				root.ai_algorithm()
@@ -1342,11 +1342,11 @@ if (player_choice == str(1)):
 			# recycle
 			if ai_play_order == 1:
 
-				brdlst = []
+				brdlst3 = []
 				for i in range(12):
 					for j in range(8):
-						brdlst.append(board[i][j])
-				root = StateNode(brdlst, tree_level)
+						brdlst3.append(board[i][j])
+				root = StateNode(brdlst3, tree_level)
 				root.set_max_min(ai_max_min)
 				root = game_tree_recycle(root, tree_level)
 				root.ai_algorithm()
@@ -1430,11 +1430,11 @@ if (player_choice == str(1)):
 						win = True
 						break
 
-				brdlst = []
+				brdlst4 = []
 				for i in range(12):
 					for j in range(8):
-						brdlst.append(board[i][j])
-				root = StateNode(brdlst, tree_level)
+						brdlst4.append(board[i][j])
+				root = StateNode(brdlst4, tree_level)
 				root.set_max_min(ai_max_min)
 				root = game_tree_recycle(root, tree_level)
 				root.ai_algorithm()
