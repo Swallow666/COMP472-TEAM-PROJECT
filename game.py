@@ -346,7 +346,7 @@ def recycle_move_judge(player_move):	# check all illegal input and illegal recyc
 	return True
 
 def cancel_recycle_move():
-	global board, last_added_card, moving_times, card_dict, command_history
+	global board, last_added_card, moving_times, card_dict, command_history, recycle_pop_card_stance_history
 
 	last_move_info = command_history[-1].split(' ')
 
@@ -1082,26 +1082,26 @@ def game_tree_regular(node, level):
 
 def game_tree_recycle(node, level):
 	# fake move recursion to build regular game tree
-	for a in range(65, 73):	
-		for b in range(1, 13):
-			for c in range(65, 73):
-				for d in range(1, 13):
-					for e in range(1, 9):
-						for f in range(65, 73):
-							for g in range(1, 13):
-								command_str = chr(a) + ' ' + str(b) + ' ' + chr(c) + ' ' + str(d) + ' ' + str(e) + ' ' + chr(f) + ' ' + str(g)
-								if recycle_move_judge(command_str) == True:
-									recycle_move(command_str)
-									brdlst = []
-									for i in range(12):
-										for j in range(8):
-											brdlst.append(board[i][j])
-									child = StateNode(brdlst, tree_level)
-									child.add_move(command_str)
-									if level > 2:
-										child = game_tree_recycle(child, level - 1)
-									node.add_child(child)
-									cancel_recycle_move()
+	for hc in card_dict:
+		for a in range(1, 9):
+			for b in range(65, 73):
+				for c in range(1, 13):
+					if card_dict[hc] in ('1', '3', '5', '7'):
+						command_str = hc[0] + ' ' + hc[1] + ' ' + chr(ord(hc[0]) + 1) + ' ' + hc[1] + ' ' + str(a) + ' ' + chr(b) + ' ' + str(c)
+					if card_dict[hc] in ('2', '4', '6', '8'):
+						command_str = hc[0] + ' ' + hc[1] + ' ' + hc[0] + ' ' + str(int(hc[1])+1) + ' ' + str(a) + ' ' + chr(b) + ' ' + str(c)
+					if recycle_move_judge(command_str) == True:
+						recycle_move(command_str)
+						brdlst = []
+						for i in range(12):
+							for j in range(8):
+								brdlst.append(board[i][j])
+						child = StateNode(brdlst, tree_level)
+						child.add_move(command_str)
+						if level > 2:
+							child = game_tree_recycle(child, level - 1)
+						node.add_child(child)
+						cancel_recycle_move()
 	return node
 
 # main program starts here, we can change below to main function later for sure
@@ -1139,7 +1139,7 @@ if (player_choice == str(0)):	# code here for one shot copy & paste input in the
 	command_list = commands.split('  ')
 
 	for i in range(0,len(command_list)):
-		if (moving_times >= 60):
+		if (moving_times >= 40):
 			print('Draw. No winner.')
 			break
 		elif (moving_times < 24):
@@ -1211,7 +1211,7 @@ if (player_choice == str(1)):
 		if game_dict['player2'] == 'dot':
 			ai_max_min = -1
 
-	while moving_times < 60:
+	while moving_times < 40:   # play until 40 rounds
 
 		if moving_times < 24:
 
@@ -1483,7 +1483,7 @@ if (player_choice == str(2)):
 	else:
 		game_dict['player2'] = 'dot'
 
-	while(moving_times < 60):           # play until 60 rounds
+	while(moving_times < 40):           # play until 40 rounds
 
 		if(moving_times < 24):		# regular until 24 rounds
 			print('player1_regular>> ')
