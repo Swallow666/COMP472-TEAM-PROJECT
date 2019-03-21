@@ -23,16 +23,143 @@ class StateNode:
 		sum = 0
 		brd = np.array(self.board_list)
 		brd.resize(12,8)
-		for i in range(12):
-			for j in range(8):
-				if (brd[i][j] == 'W\u26AA'):
-					sum += (1 * ((11 - i) * 10 + j + 1))
-				if (brd[i][j] == 'W\u26AB'):
-					sum += (3 * ((11 - i) * 10 + j + 1))
-				if (brd[i][j] == 'R\u26AA'):
-					sum += (-1.5 * ((11 - i) * 10 + j + 1))
-				if (brd[i][j] == 'R\u26AB'):
-					sum += (-2 * ((11 - i) * 10 + j + 1))
+
+		color_counter = 0
+		dot_counter = 0
+		for i in range(12):		# counter=n => n+1 same together, row
+			for j in range(1,8):
+				if ((brd[i][j][0] == brd[i][j-1][0]) and (brd[i][j] != '   ')):
+					color_counter += 1
+				else:
+					sum += 10**color_counter
+					color_counter = 0
+				if ((brd[i][j][1] == brd[i][j-1][1]) and (brd[i][j] != '   ')):
+					dot_counter += 1
+				else:
+					sum -= 10**dot_counter
+					dot_counter = 0
+			sum += 10**color_counter
+			sum -= 10**dot_counter
+			color_counter = 0
+			dot_counter = 0
+
+		for j in range(8):		# column
+			for i in range(1,12):
+				if ((brd[i][j][0] == brd[i-1][j][0]) and (brd[i][j] != '   ')):
+					color_counter += 1
+				else:
+					sum += 10**color_counter
+					color_counter = 0
+				if ((brd[i][j][1] == brd[i-1][j][1]) and (brd[i][j] != '   ')):
+					dot_counter += 1
+				else:
+					sum -= 10**dot_counter
+					dot_counter = 0
+			sum += 10**color_counter
+			sum -= 10**dot_counter
+			color_counter = 0
+			dot_counter = 0
+
+		for i in range(3,16):		#dignal/  3-15
+			if i < 8:		# i=3-7
+				for j in range(1,i+1):
+					if ((brd[i-j][j][0] == brd[i-j+1][j-1][0]) and (brd[i-j][j] != '   ')):
+						color_counter += 1
+					else:
+						sum += 10**color_counter
+						color_counter = 0
+					if ((brd[i-j][j][1] == brd[i-j+1][j-1][1]) and (brd[i-j][j] != '   ')):
+						dot_counter += 1
+					else:
+						sum -= 10**dot_counter
+						dot_counter = 0
+				sum += 10**color_counter
+				sum -= 10**dot_counter
+				color_counter = 0
+				dot_counter = 0
+			elif i < 12:		# i=8-11
+				for j in range(1,8):
+					if ((brd[i-j][j][0] == brd[i-j+1][j-1][0]) and (brd[i-j][j] != '   ')):
+						color_counter += 1
+					else:
+						sum += 10**color_counter
+						color_counter = 0
+					if ((brd[i-j][j][1] == brd[i-j+1][j-1][1]) and (brd[i-j][j] != '   ')):
+						dot_counter += 1
+					else:
+						sum -= 10**dot_counter
+						dot_counter = 0
+				sum += 10**color_counter
+				sum -= 10**dot_counter
+				color_counter = 0
+				dot_counter = 0
+			else:		# i=12-15
+				for j in range(i-10,8):
+					if ((brd[i-j][j][0] == brd[i-j+1][j-1][0]) and (brd[i-j][j] != '   ')):
+						color_counter += 1
+					else:
+						sum += 10**color_counter
+						color_counter = 0
+					if ((brd[i-j][j][1] == brd[i-j+1][j-1][1]) and (brd[i-j][j] != '   ')):
+						dot_counter += 1
+					else:
+						sum -= 10**dot_counter
+						dot_counter = 0
+				sum += 10**color_counter
+				sum -= 10**dot_counter
+				color_counter = 0
+				dot_counter = 0
+
+		for i in range(3,16):		#dignal\  3-15 
+			if i < 8:		# i=3-7
+				for j in range(1,i+1):
+					if ((brd[11-i+j][j][0] == brd[10-i+j][j-1][0]) and (brd[11-i+j][j] != '   ')):
+						color_counter += 1
+					else:
+						sum += 10**color_counter
+						color_counter = 0
+					if ((brd[11-i+j][j][1] == brd[10-i+j][j-1][1]) and (brd[11-i+j][j] != '   ')):
+						dot_counter += 1
+					else:
+						sum -= 10**dot_counter
+						dot_counter = 0
+				sum += 10**color_counter
+				sum -= 10**dot_counter
+				color_counter = 0
+				dot_counter = 0
+			elif i < 12:		# i=8-11
+				for j in range(1,8):
+					if ((brd[11-i+j][j][0] == brd[10-i+j][j-1][0]) and (brd[11-i+j][j] != '   ')):
+						color_counter += 1
+					else:
+						sum += 10**color_counter
+						color_counter = 0
+					if ((brd[11-i+j][j][1] == brd[10-i+j][j-1][1]) and (brd[11-i+j][j] != '   ')):
+						dot_counter += 1
+					else:
+						sum -= 10**dot_counter
+						dot_counter = 0
+				sum += 10**color_counter
+				sum -= 10**dot_counter
+				color_counter = 0
+				dot_counter = 0
+			else:		# i=12-15
+				for j in range(i-10,8):
+					if ((brd[11-i+j][j][0] == brd[10-i+j][j-1][0]) and (brd[11-i+j][j] != '   ')):
+						color_counter += 1
+					else:
+						sum += 10**color_counter
+						color_counter = 0
+					if ((brd[11-i+j][j][1] == brd[10-i+j][j-1][1]) and (brd[11-i+j][j] != '   ')):
+						dot_counter += 1
+					else:
+						sum -= 10**dot_counter
+						dot_counter = 0
+				sum += 10**color_counter
+				sum -= 10**dot_counter
+				color_counter = 0
+				dot_counter = 0
+
 		self.score = sum
 
 	def minimax(self, min_max, level):
